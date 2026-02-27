@@ -1,0 +1,92 @@
+# ============================================================
+# GitHub Actions - Validate & Release
+# Triggered op elke push naar main
+# ============================================================
+
+name: Validate & Release
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  validate:
+    name: Valideer configuratie
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Installeer Docker Compose
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y docker-compose-plugin
+
+      - name: Maak tijdelijke .env aan voor validatie
+        run: |
+          cp .env.example .env
+          # Overschrijf paden met tijdelijke lokale paden zodat compose validatie slaagt
+          sed -i 's|MEDIA_PATH=.*|MEDIA_PATH=/tmp/media|' .env
+          sed -i 's|DOCKER_PATH=.*|DOCKER_PATH=/tmp/docker|' .env
+          sed -i 's|DB_PATH=.*|DB_PATH=/tmp/databases|' .env
+          mkdir -p /tmp/media /tmp/docker /tmp/databases
+
+      - name: Valideer docker-compose.yml syntax
+        run: |
+          cd compose
+          docker compose --env-file ../.env config --quiet
+          echo "✅ docker-compose.yml is geldig"
+
+      - name: Controleer setup.sh syntax
+        run: bash -n scripts/setup.sh && echo "✅ setup.sh syntax is geldig"
+
+  release:
+    name: Maak release aan
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Genereer versienummer op basis van datum + run number
+        id: version
+        run: |
+          VERSION="v$(date +'%Y.%m.%d')-${{ github.run_number }}"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Versie: $VERSION"
+
+      - name: Maak release aan
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.VERSION }}
+          name: Release ${{ steps.version.outputs.VERSION }}
+          body: |
+            ## Wijzigingen
+            Automatische release van commit `${{ github.sha }}`
+
+            ## Uitrollen op server
+            SSH naar je Synology via Tailscale en voer uit:
+            ```bash
+            cd /pad/naar/media-stack
+            git pull
+            cd compose && docker compose up -d
+            ```
+          files: |
+            compose/docker-compose.yml
+            scripts/setup.sh
+            .env.example
+          draft: false
+          prerelease: false
