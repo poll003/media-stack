@@ -107,7 +107,28 @@ echo "--- Permissions instellen ---"
 if [ -n "${PUID:-}" ] && [ -n "${PGID:-}" ]; then
   chown -R "$PUID:$PGID" "$MEDIA_PATH" "$DOCKER_PATH" "$DB_PATH" 2>/dev/null \
     && log_ok "Permissions ingesteld voor PUID=$PUID PGID=$PGID" \
-    || log_warn "Kon permissions niet instellen (mogelijk geen root). Controleer handmatig."
+    || log_warn "Kon permissions niet instellen (mogelijk geen root). Voer handmatig uit:"
+
+  # Expliciete chown op container config mappen
+  CONTAINER_DIRS=(
+    "$DOCKER_PATH/sabnzbd"
+    "$DOCKER_PATH/prowlarr"
+    "$DOCKER_PATH/sonarr"
+    "$DOCKER_PATH/radarr"
+    "$DOCKER_PATH/lidarr"
+    "$DOCKER_PATH/bazarr"
+    "$DOCKER_PATH/jellyfin"
+    "$DOCKER_PATH/jellyseerr"
+    "$DOCKER_PATH/recyclarr"
+  )
+
+  for dir in "${CONTAINER_DIRS[@]}"; do
+    if [ -d "$dir" ]; then
+      chown -R "$PUID:$PGID" "$dir" 2>/dev/null \
+        && log_ok "Permissions OK: $dir" \
+        || log_warn "Kon permissions niet instellen op: $dir"
+    fi
+  done
 else
   log_warn "PUID/PGID niet gevonden in .env, permissions overgeslagen"
 fi

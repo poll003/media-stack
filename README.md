@@ -40,7 +40,7 @@ docker compose up -d
 
 ```bash
 id
-# uid=1000(gebruiker) gid=1000(gebruiker) ...
+# uid=1029(gebruiker) gid=1029(gebruiker) ...
 ```
 
 ## Updates uitrollen
@@ -56,6 +56,29 @@ docker compose up -d
 
 ## Toegang
 
-- **Lokaal netwerk:** `http://ip:poort`
-- **Onderweg:** Installeer Tailscale op je telefoon en gebruik `http://tailscale-ip:poort`
+- **Lokaal netwerk:** `http://synology-ip:poort`
+- **Onderweg:** Installeer Tailscale op je telefoon en gebruik `http://synology-tailscale-ip:poort`
 - Geen publieke poorten nodig
+
+## Permissions handmatig herstellen
+
+Als containers niet opstarten vanwege `Permission denied` fouten:
+
+```bash
+sudo chown -R 1029:1029 \
+  /volume1/docker/sabnzbd \
+  /volume1/docker/prowlarr \
+  /volume1/docker/sonarr \
+  /volume1/docker/radarr \
+  /volume1/docker/lidarr \
+  /volume1/docker/bazarr \
+  /volume1/docker/jellyfin \
+  /volume1/docker/jellyseerr \
+  /volume1/docker/recyclarr \
+  /volume1/Media \
+  /volume2/Databases_SSD
+
+docker compose restart
+```
+
+Vervang `1029` door jouw eigen PUID/PGID (controleer met `id`).
