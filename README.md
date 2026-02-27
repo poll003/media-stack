@@ -22,18 +22,17 @@ Automatische image updates via Watchtower, CI/CD via GitHub Actions.
 
 ```bash
 # 1. Clone de repo op je Synology (via Tailscale SSH)
-git clone https://github.com/jouw-gebruiker/media-stack.git
-cd media-stack
+git clone https://github.com/poll003/media-stack.git /volume1/docker/media-stack
+cd /volume1/docker/media-stack
 
 # 2. Maak .env aan op basis van het voorbeeld
 cp .env.example .env
-nano .env  # Pas paden, PUID, PGID en TZ aan
+nano .env  # Pas PUID, PGID en TZ aan indien nodig
 
 # 3. Voer setup script uit (maakt alle mappen aan en controleert volumes)
 bash scripts/setup.sh
 
 # 4. Start de stack
-cd compose
 docker compose up -d
 ```
 
@@ -41,7 +40,7 @@ docker compose up -d
 
 ```bash
 id
-# uid=1000(gebruiker) gid=1000(gebruiker) ...
+# uid=1029(gebruiker) gid=1029(gebruiker) ...
 ```
 
 ## Updates uitrollen
@@ -50,7 +49,8 @@ Updates van images worden automatisch uitgerold door Watchtower.
 
 Voor configuratiewijzigingen (na een git pull):
 ```bash
-cd compose
+cd /volume1/docker/media-stack
+git pull
 docker compose up -d
 ```
 

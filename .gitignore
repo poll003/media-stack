@@ -9,6 +9,10 @@
 config/*/
 !config/.gitkeep
 
+# Secrets - nooit committen
+config/recyclarr/secrets.yml
+config/bazarr/config.yml
+
 # OS bestanden
 .DS_Store
 Thumbs.db
