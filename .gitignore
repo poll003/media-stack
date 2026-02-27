@@ -5,10 +5,6 @@
 # Nooit committen - bevat wachtwoorden en paden
 .env
 
-# Lokale container data en cache
-config/*/
-!config/.gitkeep
-
 # Secrets - nooit committen
 config/recyclarr/secrets.yml
 config/bazarr/config.yml
