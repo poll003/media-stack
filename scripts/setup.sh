@@ -87,6 +87,16 @@ DIRS=(
   "$DOCKER_PATH/jellyseerr/config"
   "$DOCKER_PATH/recyclarr/config"
 
+  # Tailscale state mappen per container
+  "$DOCKER_PATH/tailscale-sabnzbd"
+  "$DOCKER_PATH/tailscale-prowlarr"
+  "$DOCKER_PATH/tailscale-sonarr"
+  "$DOCKER_PATH/tailscale-radarr"
+  "$DOCKER_PATH/tailscale-lidarr"
+  "$DOCKER_PATH/tailscale-bazarr"
+  "$DOCKER_PATH/tailscale-jellyfin"
+  "$DOCKER_PATH/tailscale-jellyseerr"
+
   # Database mappen
   "$DB_PATH/jellyfin"
 )
@@ -109,7 +119,7 @@ if [ -n "${PUID:-}" ] && [ -n "${PGID:-}" ]; then
     && log_ok "Permissions ingesteld voor PUID=$PUID PGID=$PGID" \
     || log_warn "Kon permissions niet instellen (mogelijk geen root). Voer handmatig uit:"
 
-  # Expliciete chown op container config mappen
+  # Expliciete chown op container config mappen én submappen
   CONTAINER_DIRS=(
     "$DOCKER_PATH/sabnzbd"
     "$DOCKER_PATH/prowlarr"
@@ -127,6 +137,12 @@ if [ -n "${PUID:-}" ] && [ -n "${PGID:-}" ]; then
       chown -R "$PUID:$PGID" "$dir" 2>/dev/null \
         && log_ok "Permissions OK: $dir" \
         || log_warn "Kon permissions niet instellen op: $dir"
+      # Zorg ook dat config submap correct is (Synology maakt deze soms aan als docker groep)
+      if [ -d "$dir/config" ]; then
+        chown -R "$PUID:$PGID" "$dir/config" 2>/dev/null \
+          && log_ok "Permissions OK: $dir/config" \
+          || log_warn "Kon permissions niet instellen op: $dir/config"
+      fi
     fi
   done
 else

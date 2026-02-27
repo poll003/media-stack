@@ -1,16 +1,33 @@
 # ============================================================
 # Media Stack - Docker Compose
 # Vereist: .env bestand op basis van .env.example
+# Elke service heeft een Tailscale sidecar voor VPN-vrije toegang
 # ============================================================
 
 services:
 
-  # ------------------------------------------------------------
-  # SABnzbd - Usenet download client
-  # ------------------------------------------------------------
+  # ============================================================
+  # SABNZBD
+  # ============================================================
+  tailscale-sabnzbd:
+    image: tailscale/tailscale:latest
+    container_name: tailscale-sabnzbd
+    hostname: sabnzbd
+    environment:
+      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ${DOCKER_PATH}/tailscale-sabnzbd:/var/lib/tailscale
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    restart: unless-stopped
+
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
+    network_mode: service:tailscale-sabnzbd
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -19,36 +36,68 @@ services:
       - ${DOCKER_PATH}/sabnzbd/config:/config
       - ${MEDIA_PATH}/Download/complete:/downloads/complete
       - ${MEDIA_PATH}/Download/incomplete:/downloads/incomplete
-    ports:
-      - ${PORT_SABNZBD}:8080
     restart: unless-stopped
+    depends_on:
+      - tailscale-sabnzbd
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
-  # ------------------------------------------------------------
-  # Prowlarr - Indexer manager
-  # ------------------------------------------------------------
+  # ============================================================
+  # PROWLARR
+  # ============================================================
+  tailscale-prowlarr:
+    image: tailscale/tailscale:latest
+    container_name: tailscale-prowlarr
+    hostname: prowlarr
+    environment:
+      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ${DOCKER_PATH}/tailscale-prowlarr:/var/lib/tailscale
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    restart: unless-stopped
+
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
+    network_mode: service:tailscale-prowlarr
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
       - ${DOCKER_PATH}/prowlarr/config:/config
-    ports:
-      - ${PORT_PROWLARR}:9696
     restart: unless-stopped
+    depends_on:
+      - tailscale-prowlarr
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
-  # ------------------------------------------------------------
-  # Sonarr - Series beheer
-  # ------------------------------------------------------------
+  # ============================================================
+  # SONARR
+  # ============================================================
+  tailscale-sonarr:
+    image: tailscale/tailscale:latest
+    container_name: tailscale-sonarr
+    hostname: sonarr
+    environment:
+      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ${DOCKER_PATH}/tailscale-sonarr:/var/lib/tailscale
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    restart: unless-stopped
+
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
+    network_mode: service:tailscale-sonarr
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -56,21 +105,36 @@ services:
     volumes:
       - ${DOCKER_PATH}/sonarr/config:/config
       - ${MEDIA_PATH}:/media
-    ports:
-      - ${PORT_SONARR}:8989
     restart: unless-stopped
     depends_on:
+      - tailscale-sonarr
       - sabnzbd
       - prowlarr
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
-  # ------------------------------------------------------------
-  # Radarr - Film beheer
-  # ------------------------------------------------------------
+  # ============================================================
+  # RADARR
+  # ============================================================
+  tailscale-radarr:
+    image: tailscale/tailscale:latest
+    container_name: tailscale-radarr
+    hostname: radarr
+    environment:
+      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ${DOCKER_PATH}/tailscale-radarr:/var/lib/tailscale
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    restart: unless-stopped
+
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
+    network_mode: service:tailscale-radarr
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -78,21 +142,36 @@ services:
     volumes:
       - ${DOCKER_PATH}/radarr/config:/config
       - ${MEDIA_PATH}:/media
-    ports:
-      - ${PORT_RADARR}:7878
     restart: unless-stopped
     depends_on:
+      - tailscale-radarr
       - sabnzbd
       - prowlarr
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
-  # ------------------------------------------------------------
-  # Lidarr - Muziek beheer
-  # ------------------------------------------------------------
+  # ============================================================
+  # LIDARR
+  # ============================================================
+  tailscale-lidarr:
+    image: tailscale/tailscale:latest
+    container_name: tailscale-lidarr
+    hostname: lidarr
+    environment:
+      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ${DOCKER_PATH}/tailscale-lidarr:/var/lib/tailscale
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    restart: unless-stopped
+
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
     container_name: lidarr
+    network_mode: service:tailscale-lidarr
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -100,21 +179,36 @@ services:
     volumes:
       - ${DOCKER_PATH}/lidarr/config:/config
       - ${MEDIA_PATH}:/media
-    ports:
-      - ${PORT_LIDARR}:8686
     restart: unless-stopped
     depends_on:
+      - tailscale-lidarr
       - sabnzbd
       - prowlarr
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
-  # ------------------------------------------------------------
-  # Bazarr - Ondertitels
-  # ------------------------------------------------------------
+  # ============================================================
+  # BAZARR
+  # ============================================================
+  tailscale-bazarr:
+    image: tailscale/tailscale:latest
+    container_name: tailscale-bazarr
+    hostname: bazarr
+    environment:
+      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ${DOCKER_PATH}/tailscale-bazarr:/var/lib/tailscale
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    restart: unless-stopped
+
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
+    network_mode: service:tailscale-bazarr
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -122,21 +216,36 @@ services:
     volumes:
       - ${DOCKER_PATH}/bazarr/config:/config
       - ${MEDIA_PATH}:/media
-    ports:
-      - ${PORT_BAZARR}:6767
     restart: unless-stopped
     depends_on:
+      - tailscale-bazarr
       - sonarr
       - radarr
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
-  # ------------------------------------------------------------
-  # Jellyfin - Media server
-  # ------------------------------------------------------------
+  # ============================================================
+  # JELLYFIN
+  # ============================================================
+  tailscale-jellyfin:
+    image: tailscale/tailscale:latest
+    container_name: tailscale-jellyfin
+    hostname: jellyfin
+    environment:
+      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ${DOCKER_PATH}/tailscale-jellyfin:/var/lib/tailscale
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    restart: unless-stopped
+
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
+    network_mode: service:tailscale-jellyfin
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -148,36 +257,51 @@ services:
       - ${MEDIA_PATH}/Movie:/data/movies
       - ${MEDIA_PATH}/Music:/data/music
       - ${MEDIA_PATH}/Books:/data/books
-    ports:
-      - ${PORT_JELLYFIN}:8096
     restart: unless-stopped
+    depends_on:
+      - tailscale-jellyfin
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
-  # ------------------------------------------------------------
-  # Jellyseerr - Request portal
-  # ------------------------------------------------------------
+  # ============================================================
+  # JELLYSEERR
+  # ============================================================
+  tailscale-jellyseerr:
+    image: tailscale/tailscale:latest
+    container_name: tailscale-jellyseerr
+    hostname: jellyseerr
+    environment:
+      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ${DOCKER_PATH}/tailscale-jellyseerr:/var/lib/tailscale
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    restart: unless-stopped
+
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
+    network_mode: service:tailscale-jellyseerr
     environment:
       - LOG_LEVEL=debug
       - TZ=${TZ}
     volumes:
       - ${DOCKER_PATH}/jellyseerr/config:/app/config
-    ports:
-      - ${PORT_JELLYSEERR}:5055
     restart: unless-stopped
     depends_on:
+      - tailscale-jellyseerr
       - jellyfin
       - sonarr
       - radarr
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
-  # ------------------------------------------------------------
-  # Recyclarr - TRaSH Guide kwaliteitsprofielen sync
-  # ------------------------------------------------------------
+  # ============================================================
+  # RECYCLARR
+  # ============================================================
   recyclarr:
     image: ghcr.io/recyclarr/recyclarr:latest
     container_name: recyclarr
@@ -194,9 +318,9 @@ services:
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
-  # ------------------------------------------------------------
-  # Watchtower - Automatische image updates
-  # ------------------------------------------------------------
+  # ============================================================
+  # WATCHTOWER
+  # ============================================================
   watchtower:
     image: containrrr/watchtower:latest
     container_name: watchtower

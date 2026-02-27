@@ -56,25 +56,46 @@ docker compose up -d
 
 ## Toegang
 
-- **Lokaal netwerk:** `http://synology-ip:poort`
-- **Onderweg:** Installeer Tailscale op je telefoon en gebruik `http://synology-tailscale-ip:poort`
-- Geen publieke poorten nodig
+Elke service heeft een eigen Tailscale sidecar en verschijnt als apart device in je Tailscale netwerk. Geen poorten nodig, geen publiek IP.
+
+| Service | Tailscale adres |
+|---|---|
+| SABnzbd | `http://sabnzbd:8080` |
+| Prowlarr | `http://prowlarr:9696` |
+| Sonarr | `http://sonarr:8989` |
+| Radarr | `http://radarr:7878` |
+| Lidarr | `http://lidarr:8686` |
+| Bazarr | `http://bazarr:6767` |
+| Jellyfin | `http://jellyfin:8096` |
+| Jellyseerr | `http://jellyseerr:5055` |
+
+- **Lokaal thuis:** gebruik het lokale IP `http://192.168.1.250:poort` of het Tailscale adres
+- **Onderweg:** verbind je telefoon via Tailscale en gebruik bovenstaande adressen direct
 
 ## Permissions handmatig herstellen
 
-Als containers niet opstarten vanwege `Permission denied` fouten:
+Als containers niet opstarten vanwege `Permission denied` fouten voer dan het volgende uit. Let op: Synology maakt `config` submappen soms aan als groep `docker` in plaats van jouw gebruiker, vandaar dat we expliciet de submappen meenemen:
 
 ```bash
 sudo chown -R 1029:1029 \
   /volume1/docker/sabnzbd \
+  /volume1/docker/sabnzbd/config \
   /volume1/docker/prowlarr \
+  /volume1/docker/prowlarr/config \
   /volume1/docker/sonarr \
+  /volume1/docker/sonarr/config \
   /volume1/docker/radarr \
+  /volume1/docker/radarr/config \
   /volume1/docker/lidarr \
+  /volume1/docker/lidarr/config \
   /volume1/docker/bazarr \
+  /volume1/docker/bazarr/config \
   /volume1/docker/jellyfin \
+  /volume1/docker/jellyfin/config \
   /volume1/docker/jellyseerr \
+  /volume1/docker/jellyseerr/config \
   /volume1/docker/recyclarr \
+  /volume1/docker/recyclarr/config \
   /volume1/Media \
   /volume2/Databases_SSD
 
