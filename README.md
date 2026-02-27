@@ -40,7 +40,7 @@ docker compose up -d
 
 ```bash
 id
-# uid=1029(gebruiker) gid=1029(gebruiker) ...
+# uid=1000(gebruiker) gid=1000(gebruiker) ...
 ```
 
 ## Updates uitrollen
@@ -56,6 +56,6 @@ docker compose up -d
 
 ## Toegang
 
-- **Lokaal netwerk:** `http://synology-ip:poort`
-- **Onderweg:** Installeer Tailscale op je telefoon en gebruik `http://synology-tailscale-ip:poort`
+- **Lokaal netwerk:** `http://ip:poort`
+- **Onderweg:** Installeer Tailscale op je telefoon en gebruik `http://tailscale-ip:poort`
 - Geen publieke poorten nodig
