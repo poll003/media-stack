@@ -72,6 +72,6 @@ else
   echo "  https://[synology-tailscale-naam]/jellyfin"
 fi
 echo ""
-echo "Overige services alleen via LAN (http://microserver:poort)"
+echo "Overige services alleen via LAN (http://[synology-naam]:poort)"
 echo "=============================================="
 echo ""
