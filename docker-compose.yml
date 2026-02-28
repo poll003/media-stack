@@ -267,7 +267,7 @@ services:
     environment:
       - TZ=${TZ}
       - DB_ENGINE=pdo_sqlite
-      - DB_NAME=${DB_PATH}/spotweb_sqlite/spotweb.db3
+      - DB_NAME=/var/www/spotweb/dbfiles/spotweb.db3
       - CRON_INTERVAL=*/1 * * * *
     volumes:
       - ${DB_PATH}/spotweb_sqlite:/var/www/spotweb/dbfiles
