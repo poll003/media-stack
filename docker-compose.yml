@@ -257,29 +257,29 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
+
   # ------------------------------------------------------------
-  # Watchtower - Automatische image updates
+  # Spotweb - Usenet nieuwslezer
   # ------------------------------------------------------------
   spotweb:
     image: erikdevries/spotweb
     container_name: spotweb_sqlite
     environment:
       - TZ=${TZ}
-      - DB_ENGINE: pdo_sqlite
-      - DB_NAME: ${DB_PATH}/spotweb_sqlite/spotweb.db3
-      - CRON_INTERVAL: '*/1 * * * *'
+      - DB_ENGINE=pdo_sqlite
+      - DB_NAME=${DB_PATH}/spotweb_sqlite/spotweb.db3
+      - CRON_INTERVAL=*/1 * * * *
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - sqlite-data:${DB_PATH}/spotweb_sqlite
+      - ${DB_PATH}/spotweb_sqlite:/var/www/spotweb/dbfiles
     ports:
-      - '8085:80'
+      - ${PORT_SPOTWEB}:80
+    networks:
+      - mediastack
     restart: unless-stopped
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
 
 networks:
   mediastack:
     name: mediastack
     driver: bridge
-
-
-
-
