@@ -91,8 +91,6 @@ DIRS=(
   "$DB_PATH/jellyfin"
   "$DB_PATH/jellyseerr"
 
-  # Database mappen
-  "$DB_PATH/jellyfin"
 )
 
 for dir in "${DIRS[@]}"; do

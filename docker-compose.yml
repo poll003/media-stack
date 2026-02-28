@@ -27,7 +27,15 @@ services:
       - ${MEDIA_PATH}/Download/incomplete:/downloads/incomplete
     ports:
       - 127.0.0.1:${PORT_SABNZBD}:8080
+    networks:
+      - mediastack
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api?mode=version"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
@@ -45,7 +53,15 @@ services:
       - ${DB_PATH}/prowlarr:/config
     ports:
       - 127.0.0.1:${PORT_PROWLARR}:9696
+    networks:
+      - mediastack
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9696/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
@@ -64,10 +80,14 @@ services:
       - ${MEDIA_PATH}:/media
     ports:
       - 127.0.0.1:${PORT_SONARR}:8989
+    networks:
+      - mediastack
     restart: unless-stopped
     depends_on:
-      - sabnzbd
-      - prowlarr
+      sabnzbd:
+        condition: service_healthy
+      prowlarr:
+        condition: service_healthy
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
@@ -86,10 +106,14 @@ services:
       - ${MEDIA_PATH}:/media
     ports:
       - 127.0.0.1:${PORT_RADARR}:7878
+    networks:
+      - mediastack
     restart: unless-stopped
     depends_on:
-      - sabnzbd
-      - prowlarr
+      sabnzbd:
+        condition: service_healthy
+      prowlarr:
+        condition: service_healthy
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
@@ -108,10 +132,14 @@ services:
       - ${MEDIA_PATH}:/media
     ports:
       - 127.0.0.1:${PORT_LIDARR}:8686
+    networks:
+      - mediastack
     restart: unless-stopped
     depends_on:
-      - sabnzbd
-      - prowlarr
+      sabnzbd:
+        condition: service_healthy
+      prowlarr:
+        condition: service_healthy
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
@@ -130,6 +158,8 @@ services:
       - ${MEDIA_PATH}:/media
     ports:
       - 127.0.0.1:${PORT_BAZARR}:6767
+    networks:
+      - mediastack
     restart: unless-stopped
     depends_on:
       - sonarr
@@ -156,6 +186,8 @@ services:
       - ${MEDIA_PATH}/Books:/data/books
     ports:
       - 127.0.0.1:${PORT_JELLYFIN}:8096
+    networks:
+      - mediastack
     restart: unless-stopped
     labels:
       - com.centurylinklabs.watchtower.enable=true
@@ -167,6 +199,8 @@ services:
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
     environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
       - LOG_LEVEL=debug
       - TZ=${TZ}
     volumes:
@@ -174,6 +208,8 @@ services:
       - ${DB_PATH}/jellyseerr:/app/config/db
     ports:
       - 127.0.0.1:${PORT_JELLYSEERR}:5055
+    networks:
+      - mediastack
     restart: unless-stopped
     depends_on:
       - jellyfin
@@ -194,7 +230,9 @@ services:
       - ${DOCKER_PATH}/recyclarr/config:/config
       - ./config/recyclarr/recyclarr.yml:/config/recyclarr.yml:ro
       - ./config/recyclarr/secrets.yml:/config/secrets.yml:ro
-    restart: unless-stopped
+    networks:
+      - mediastack
+    restart: on-failure
     depends_on:
       - sonarr
       - radarr
@@ -214,6 +252,12 @@ services:
       - WATCHTOWER_LABEL_ENABLE=true
       - WATCHTOWER_POLL_INTERVAL=${WATCHTOWER_POLL_INTERVAL}
       - WATCHTOWER_NOTIFICATION_REPORT=true
+      - WATCHTOWER_NOTIFICATION_URL=${WATCHTOWER_NOTIFICATION_URL}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+
+networks:
+  mediastack:
+    name: mediastack
+    driver: bridge
