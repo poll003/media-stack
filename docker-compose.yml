@@ -257,7 +257,29 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
+  # ------------------------------------------------------------
+  # Watchtower - Automatische image updates
+  # ------------------------------------------------------------
+  spotweb:
+    image: erikdevries/spotweb
+    container_name: spotweb_sqlite
+    environment:
+      - TZ=${TZ}
+      - DB_ENGINE: pdo_sqlite
+      - DB_NAME: ${DB_PATH}/spotweb_sqlite/spotweb.db3
+      - CRON_INTERVAL: '*/1 * * * *'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - sqlite-data:${DB_PATH}/spotweb_sqlite
+    ports:
+      - '8085:80'
+    restart: unless-stopped
+
 networks:
   mediastack:
     name: mediastack
     driver: bridge
+
+
+
+
