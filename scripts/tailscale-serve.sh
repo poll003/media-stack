@@ -1,15 +1,13 @@
 #!/usr/bin/env bash
 # ============================================================
 # Tailscale Serve - Setup script
-# Maakt alle media stack services bereikbaar via Tailscale
-# zonder open poorten
+# Stelt Jellyfin beschikbaar via Tailscale voor toegang onderweg.
+# Overige services zijn alleen bereikbaar via het lokale netwerk.
 #
 # Gebruik: sudo bash scripts/tailscale-serve.sh
 #
 # Na uitvoeren bereikbaar via:
-#   https://synology-naam.tailnet-naam.ts.net/sabnzbd
-#   https://synology-naam.tailnet-naam.ts.net/sonarr
-#   etc.
+#   https://synology-naam.tailnet-naam.ts.net/jellyfin
 # ============================================================
 
 set -euo pipefail
@@ -56,14 +54,7 @@ configure_serve() {
     || log_warn "Kon serve niet instellen voor $name"
 }
 
-configure_serve "sabnzbd"    "${PORT_SABNZBD}"
-configure_serve "prowlarr"   "${PORT_PROWLARR}"
-configure_serve "sonarr"     "${PORT_SONARR}"
-configure_serve "radarr"     "${PORT_RADARR}"
-configure_serve "lidarr"     "${PORT_LIDARR}"
-configure_serve "bazarr"     "${PORT_BAZARR}"
 configure_serve "jellyfin"   "${PORT_JELLYFIN}"
-configure_serve "jellyseerr" "${PORT_JELLYSEERR}"
 
 echo ""
 echo "--- Huidige Tailscale Serve status ---"
@@ -73,14 +64,14 @@ echo ""
 echo "=============================================="
 log_ok "Tailscale Serve geconfigureerd!"
 echo ""
-echo "Services bereikbaar via:"
+echo "Jellyfin bereikbaar via Tailscale:"
 TAILSCALE_NAME=$(tailscale status --json | grep -o '"DNSName":"[^"]*"' | head -1 | cut -d'"' -f4 | sed 's/\.$//')
 if [ -n "$TAILSCALE_NAME" ]; then
-  for service in sabnzbd prowlarr sonarr radarr lidarr bazarr jellyfin jellyseerr; do
-    echo "  https://$TAILSCALE_NAME/$service"
-  done
+  echo "  https://$TAILSCALE_NAME/jellyfin"
 else
-  echo "  https://[synology-tailscale-naam]/[service]"
+  echo "  https://[synology-tailscale-naam]/jellyfin"
 fi
+echo ""
+echo "Overige services alleen via LAN (http://microserver:poort)"
 echo "=============================================="
 echo ""

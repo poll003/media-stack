@@ -26,7 +26,7 @@ services:
       - ${MEDIA_PATH}/Download/complete:/downloads/complete
       - ${MEDIA_PATH}/Download/incomplete:/downloads/incomplete
     ports:
-      - 127.0.0.1:${PORT_SABNZBD}:8080
+      - ${PORT_SABNZBD}:8080
     networks:
       - mediastack
     restart: unless-stopped
@@ -52,7 +52,7 @@ services:
     volumes:
       - ${DB_PATH}/prowlarr:/config
     ports:
-      - 127.0.0.1:${PORT_PROWLARR}:9696
+      - ${PORT_PROWLARR}:9696
     networks:
       - mediastack
     restart: unless-stopped
@@ -79,7 +79,7 @@ services:
       - ${DB_PATH}/sonarr:/config
       - ${MEDIA_PATH}:/media
     ports:
-      - 127.0.0.1:${PORT_SONARR}:8989
+      - ${PORT_SONARR}:8989
     networks:
       - mediastack
     restart: unless-stopped
@@ -105,7 +105,7 @@ services:
       - ${DB_PATH}/radarr:/config
       - ${MEDIA_PATH}:/media
     ports:
-      - 127.0.0.1:${PORT_RADARR}:7878
+      - ${PORT_RADARR}:7878
     networks:
       - mediastack
     restart: unless-stopped
@@ -131,7 +131,7 @@ services:
       - ${DB_PATH}/lidarr:/config
       - ${MEDIA_PATH}:/media
     ports:
-      - 127.0.0.1:${PORT_LIDARR}:8686
+      - ${PORT_LIDARR}:8686
     networks:
       - mediastack
     restart: unless-stopped
@@ -157,7 +157,7 @@ services:
       - ${DB_PATH}/bazarr:/config
       - ${MEDIA_PATH}:/media
     ports:
-      - 127.0.0.1:${PORT_BAZARR}:6767
+      - ${PORT_BAZARR}:6767
     networks:
       - mediastack
     restart: unless-stopped
@@ -185,7 +185,7 @@ services:
       - ${MEDIA_PATH}/Music:/data/music
       - ${MEDIA_PATH}/Books:/data/books
     ports:
-      - 127.0.0.1:${PORT_JELLYFIN}:8096
+      - ${PORT_JELLYFIN}:8096
     networks:
       - mediastack
     restart: unless-stopped
@@ -207,7 +207,7 @@ services:
       - ${DOCKER_PATH}/jellyseerr/config:/app/config
       - ${DB_PATH}/jellyseerr:/app/config/db
     ports:
-      - 127.0.0.1:${PORT_JELLYSEERR}:5055
+      - ${PORT_JELLYSEERR}:5055
     networks:
       - mediastack
     restart: unless-stopped
