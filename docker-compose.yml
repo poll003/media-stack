@@ -14,14 +14,12 @@ services:
     container_name: tailscale-sabnzbd
     hostname: sabnzbd
     environment:
-      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_AUTHKEY=${TS_OAUTH_CLIENT_SECRET}
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_USERSPACE=false
+      - TS_USERSPACE=true
     volumes:
       - ${DOCKER_PATH}/tailscale-sabnzbd:/var/lib/tailscale
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
     restart: unless-stopped
 
   sabnzbd:
@@ -50,14 +48,12 @@ services:
     container_name: tailscale-prowlarr
     hostname: prowlarr
     environment:
-      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_AUTHKEY=${TS_OAUTH_CLIENT_SECRET}
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_USERSPACE=false
+      - TS_USERSPACE=true
     volumes:
       - ${DOCKER_PATH}/tailscale-prowlarr:/var/lib/tailscale
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
     restart: unless-stopped
 
   prowlarr:
@@ -84,14 +80,12 @@ services:
     container_name: tailscale-sonarr
     hostname: sonarr
     environment:
-      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_AUTHKEY=${TS_OAUTH_CLIENT_SECRET}
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_USERSPACE=false
+      - TS_USERSPACE=true
     volumes:
       - ${DOCKER_PATH}/tailscale-sonarr:/var/lib/tailscale
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
     restart: unless-stopped
 
   sonarr:
@@ -121,14 +115,12 @@ services:
     container_name: tailscale-radarr
     hostname: radarr
     environment:
-      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_AUTHKEY=${TS_OAUTH_CLIENT_SECRET}
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_USERSPACE=false
+      - TS_USERSPACE=true
     volumes:
       - ${DOCKER_PATH}/tailscale-radarr:/var/lib/tailscale
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
     restart: unless-stopped
 
   radarr:
@@ -158,14 +150,12 @@ services:
     container_name: tailscale-lidarr
     hostname: lidarr
     environment:
-      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_AUTHKEY=${TS_OAUTH_CLIENT_SECRET}
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_USERSPACE=false
+      - TS_USERSPACE=true
     volumes:
       - ${DOCKER_PATH}/tailscale-lidarr:/var/lib/tailscale
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
     restart: unless-stopped
 
   lidarr:
@@ -195,14 +185,12 @@ services:
     container_name: tailscale-bazarr
     hostname: bazarr
     environment:
-      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_AUTHKEY=${TS_OAUTH_CLIENT_SECRET}
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_USERSPACE=false
+      - TS_USERSPACE=true
     volumes:
       - ${DOCKER_PATH}/tailscale-bazarr:/var/lib/tailscale
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
     restart: unless-stopped
 
   bazarr:
@@ -232,14 +220,12 @@ services:
     container_name: tailscale-jellyfin
     hostname: jellyfin
     environment:
-      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_AUTHKEY=${TS_OAUTH_CLIENT_SECRET}
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_USERSPACE=false
+      - TS_USERSPACE=true
     volumes:
       - ${DOCKER_PATH}/tailscale-jellyfin:/var/lib/tailscale
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
     restart: unless-stopped
 
   jellyfin:
@@ -271,14 +257,12 @@ services:
     container_name: tailscale-jellyseerr
     hostname: jellyseerr
     environment:
-      - TS_AUTHKEY=client:${TS_OAUTH_CLIENT_ID}?ephemeral=true&preauth=true&tags=tag:container&clientsecret=${TS_OAUTH_CLIENT_SECRET}
+      - TS_AUTHKEY=${TS_OAUTH_CLIENT_SECRET}
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_USERSPACE=false
+      - TS_USERSPACE=true
     volumes:
       - ${DOCKER_PATH}/tailscale-jellyseerr:/var/lib/tailscale
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
     restart: unless-stopped
 
   jellyseerr:
