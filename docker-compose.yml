@@ -25,6 +25,7 @@ services:
       - ${DOCKER_PATH}/sabnzbd/config:/config
       - ${MEDIA_PATH}/Download/complete:/downloads/complete
       - ${MEDIA_PATH}/Download/incomplete:/downloads/incomplete
+      - ${MEDIA_PATH}:/media
     ports:
       - ${PORT_SABNZBD}:8080
     networks:
