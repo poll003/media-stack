@@ -76,26 +76,20 @@ DIRS=(
   "$MEDIA_PATH/Music"
   "$MEDIA_PATH/Books"
 
-  # Config mappen per container
+  # Config mappen - SABnzbd, Jellyfin, Jellyseerr op volume1
   "$DOCKER_PATH/sabnzbd/config"
-  "$DOCKER_PATH/prowlarr/config"
-  "$DOCKER_PATH/sonarr/config"
-  "$DOCKER_PATH/radarr/config"
-  "$DOCKER_PATH/lidarr/config"
-  "$DOCKER_PATH/bazarr/config"
   "$DOCKER_PATH/jellyfin/config"
   "$DOCKER_PATH/jellyseerr/config"
   "$DOCKER_PATH/recyclarr/config"
 
-  # Tailscale state mappen per container
-  "$DOCKER_PATH/tailscale-sabnzbd"
-  "$DOCKER_PATH/tailscale-prowlarr"
-  "$DOCKER_PATH/tailscale-sonarr"
-  "$DOCKER_PATH/tailscale-radarr"
-  "$DOCKER_PATH/tailscale-lidarr"
-  "$DOCKER_PATH/tailscale-bazarr"
-  "$DOCKER_PATH/tailscale-jellyfin"
-  "$DOCKER_PATH/tailscale-jellyseerr"
+  # Database mappen - ARR apps op volume2 SSD
+  "$DB_PATH/prowlarr"
+  "$DB_PATH/sonarr"
+  "$DB_PATH/radarr"
+  "$DB_PATH/lidarr"
+  "$DB_PATH/bazarr"
+  "$DB_PATH/jellyfin"
+  "$DB_PATH/jellyseerr"
 
   # Database mappen
   "$DB_PATH/jellyfin"
@@ -122,14 +116,16 @@ if [ -n "${PUID:-}" ] && [ -n "${PGID:-}" ]; then
   # Expliciete chown op container config mappen én submappen
   CONTAINER_DIRS=(
     "$DOCKER_PATH/sabnzbd"
-    "$DOCKER_PATH/prowlarr"
-    "$DOCKER_PATH/sonarr"
-    "$DOCKER_PATH/radarr"
-    "$DOCKER_PATH/lidarr"
-    "$DOCKER_PATH/bazarr"
     "$DOCKER_PATH/jellyfin"
     "$DOCKER_PATH/jellyseerr"
     "$DOCKER_PATH/recyclarr"
+    "$DB_PATH/prowlarr"
+    "$DB_PATH/sonarr"
+    "$DB_PATH/radarr"
+    "$DB_PATH/lidarr"
+    "$DB_PATH/bazarr"
+    "$DB_PATH/jellyfin"
+    "$DB_PATH/jellyseerr"
   )
 
   for dir in "${CONTAINER_DIRS[@]}"; do

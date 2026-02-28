@@ -54,23 +54,37 @@ git pull
 docker compose up -d
 ```
 
-## Toegang
+## Volume strategie
 
-Elke service heeft een eigen Tailscale sidecar en verschijnt als apart device in je Tailscale netwerk. Geen poorten nodig, geen publiek IP.
-
-| Service | Tailscale adres |
+| Locatie | Inhoud |
 |---|---|
-| SABnzbd | `http://sabnzbd:8080` |
-| Prowlarr | `http://prowlarr:9696` |
-| Sonarr | `http://sonarr:8989` |
-| Radarr | `http://radarr:7878` |
-| Lidarr | `http://lidarr:8686` |
-| Bazarr | `http://bazarr:6767` |
-| Jellyfin | `http://jellyfin:8096` |
-| Jellyseerr | `http://jellyseerr:5055` |
+| `/volume1/docker` | SABnzbd, Jellyfin, Jellyseerr, Recyclarr config |
+| `/volume2/Databases_SSD` | ARR app databases (Sonarr, Radarr, Prowlarr, Lidarr, Bazarr, Jellyfin cache) |
+| `/volume1/Media` | Alle media bestanden |
 
-- **Lokaal thuis:** gebruik het lokale IP `http://192.168.1.250:poort` of het Tailscale adres
-- **Onderweg:** verbind je telefoon via Tailscale en gebruik bovenstaande adressen direct
+## Toegang via Tailscale Serve
+
+Eenmalig instellen zodat alle services bereikbaar zijn via Tailscale zonder open poorten:
+
+```bash
+sudo bash scripts/tailscale-serve.sh
+```
+
+Daarna bereikbaar via:
+
+| Service | URL |
+|---|---|
+| SABnzbd | `https://synology.tailnet.ts.net/sabnzbd` |
+| Prowlarr | `https://synology.tailnet.ts.net/prowlarr` |
+| Sonarr | `https://synology.tailnet.ts.net/sonarr` |
+| Radarr | `https://synology.tailnet.ts.net/radarr` |
+| Lidarr | `https://synology.tailnet.ts.net/lidarr` |
+| Bazarr | `https://synology.tailnet.ts.net/bazarr` |
+| Jellyfin | `https://synology.tailnet.ts.net/jellyfin` |
+| Jellyseerr | `https://synology.tailnet.ts.net/jellyseerr` |
+
+- **Lokaal thuis (TV):** `http://192.168.1.250:poort`
+- **Onderweg:** verbind via Tailscale en gebruik bovenstaande URLs
 
 ## Permissions handmatig herstellen
 
