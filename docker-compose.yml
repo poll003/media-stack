@@ -286,6 +286,7 @@ services:
   spottarr:
     image: ghcr.io/spottarr/spottarr:latest
     container_name: spottarr
+    user: "${PUID}:${PGID}" # Make sure to set the correct UID and GID for your system
     environment:
       - USENET__HOSTNAME=${USENET__HOSTNAME}
       - USENET__USERNAME=${USENET__USERNAME}
