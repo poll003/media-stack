@@ -280,11 +280,9 @@ services:
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
-networks:
-  mediastack:
-    name: mediastack
-    driver: bridge
-
+  # ------------------------------------------------------------
+  # Spotweb - Usenet nieuwslezer
+  # ------------------------------------------------------------
   spottarr:
     image: ghcr.io/spottarr/spottarr:latest
     container_name: spottarr
@@ -310,3 +308,7 @@ networks:
         limits:
           memory: 800M # Adjust based on available memory
 
+networks:
+  mediastack:
+    name: mediastack
+    driver: bridge
