@@ -304,6 +304,8 @@ services:
       - ${DB_PATH}/spottarr:/config
     ports:
       - "${PORT_SPOTTARR}:8383"
+    networks:
+      - mediastack
     restart: unless-stopped
     deploy:
       resources:
