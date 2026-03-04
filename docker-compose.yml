@@ -284,3 +284,29 @@ networks:
   mediastack:
     name: mediastack
     driver: bridge
+
+  spottarr:
+    image: ghcr.io/spottarr/spottarr:latest
+    container_name: spottarr
+    environment:
+      - USENET__HOSTNAME=${USENET__HOSTNAME}
+      - USENET__USERNAME=${USENET__USERNAME}
+      - USENET__PASSWORD=${USENET__PASSWORD}
+      - USENET__PORT=${USENET__PORT}
+      - USENET__USETLS=${USENET__USETLS}
+      - USENET__MAXCONNECTIONS=${USENET__MAXCONNECTIONS} # Adjust based on your usenet provider and other download clients
+      - SPOTNET__RETRIEVEAFTER=2009-10-01T00:00:00Z
+      - SPOTNET__IMPORTBATCHSIZE=10000 # Adjust based on available memory
+      - SPOTNET__RETENTIONDAYS=0 # Use 0 for unlimited
+      - SPOTNET__IMPORTADULTCONTENT=false
+      - TZ=${TZ} # Set your timezone, e.g. Europe/Amsterdam
+    volumes:
+      - ${DB_PATH}/spottarr-data:/data
+    ports:
+      - "${PORT_SPOTTARR}:8383"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 800M # Adjust based on available memory
+
