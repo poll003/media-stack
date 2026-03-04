@@ -263,7 +263,7 @@ services:
   # Spotweb - Usenet nieuwslezer
   # ------------------------------------------------------------
   spotweb:
-    image: jgeusebroek/docker-spotweb:latest
+    image: erikdevries/spotweb:latest
     container_name: spotweb_sqlite
     environment:
       - TZ=${TZ}
