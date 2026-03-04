@@ -299,7 +299,8 @@ services:
       - SPOTNET__IMPORTADULTCONTENT=false
       - TZ=${TZ} # Set your timezone, e.g. Europe/Amsterdam
     volumes:
-      - ${DB_PATH}/spottarr-data:/data
+      - ${DB_PATH}/spottarr:/data
+      - ${DB_PATH}/spottarr:/config
     ports:
       - "${PORT_SPOTTARR}:8383"
     restart: unless-stopped
