@@ -265,6 +265,7 @@ services:
   spotweb:
     image: erikdevries/spotweb:latest
     container_name: spotweb_sqlite
+    user: "${PUID}:${PGID}" # Make sure to set the correct UID and GID for your system
     environment:
       - TZ=${TZ}
       - DB_ENGINE=pdo_sqlite
