@@ -322,7 +322,7 @@ services:
       - ${DOCKER_PATH}/homepage:/app/config # Make sure your local config directory exists
       - /var/run/docker.sock:/var/run/docker.sock:ro # (optional) For docker integrations, see alternative methods
     environment:
-      HOMEPAGE_ALLOWED_HOSTS: gethomepage.dev # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
+      HOMEPAGE_ALLOWED_HOSTS: gethomepage.dev,192.168.1.250:3000,microserver:3000 # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
       PUID: $PUID
       PGID: $PGID
     networks:
